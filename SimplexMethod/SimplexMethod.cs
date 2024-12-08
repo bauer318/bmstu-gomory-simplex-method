@@ -98,7 +98,7 @@ class SimplexMethod
         int lastRowIndex = this.numRows - 1;
         int gomoryConstraintRowIndex = lastRowIndex - 1;
         int gomoryPivotCol = 0;
-        double min = 0.0;
+        double min = double.PositiveInfinity;
 
         for(int col = 0; col<this.numCols - 2; col++)
         {
@@ -354,20 +354,33 @@ class SimplexMethod
     // Entry point for testing
     public static void Main()
     {
-        // Example: Maximize z = 3x1 + 2x2
+        // Example 1: Maximize z = 4x1 + 5x2 + 6x2
         // Subject to:
-        // x1 + 2x2 <= 4
-        // 3x1 + 2x2 <= 6
-        // x1, x2 >= 0
-        double[,] tableau = {
-            {  1,  2,  3,  1,  0,  0,35 },
-            {  4,  3,  2,  0,  1,  0,45 },
-            { 3, 1,  1,  0,  0,  1,40 },
-            { -4, -5,  -6,  0,  0,  0,0 }// Objective row
+        // x1 + 2x2 + 3x3 <= 35
+        // 4x1 + 3x2 + 2x2 <= 45
+        // 3x1 + x2 + x2 <= 40
+        // x1, x2, x3 >= 0
+        //double[,] tableau = {
+        //    {  1,  2,  3,  1,  0,  0,35 },
+        //    {  4,  3,  2,  0,  1,  0,45 },
+        //    { 3, 1,  1,  0,  0,  1,40 },
+        //    { -4, -5,  -6,  0,  0,  0,0 }// Objective row
+        //};
+
+        //Example 2: Maximize z = 5x1 + 6x2
+        //Subject to:
+        // x1+x2<=5
+        //4x1+7x2<=28
+        //x1,x2 >= 0, integer
+        double[,] tableau =
+        {
+            { 1, 1, 1, 0, 5 },
+            { 4, 7, 0, 1, 28 },
+            { -5, -6, 0, 0, 0 } //Objective row
         };
 
         SimplexMethod simplex = new SimplexMethod(tableau);
         simplex.Solve();
-        
+ 
     }
 }
