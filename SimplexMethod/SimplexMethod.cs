@@ -75,7 +75,7 @@ class SimplexMethod
             this.basics = ExtendBasics(gomoryPivotCol, this.basics);
             Pivot(gomoryPivotRow, gomoryPivotCol);
             PrintTableau();
-
+            solution = PrintSolutionAndGet();
 
         } while (ExistNonIntegralSolution());
        
@@ -83,7 +83,7 @@ class SimplexMethod
 
     private double[] ExtendBasics(int gomoryPivotCol, double[] oldBasics)
     {
-        double[] newBasics = new double[this.numRows-2];
+        double[] newBasics = new double[this.numRows-1];
         for(int row = 0; row < newBasics.Length-1; row++)
         {
             newBasics[row] = oldBasics[row];
@@ -163,7 +163,13 @@ class SimplexMethod
 
         // Normalize the pivot row
         for (int col = 0; col < numCols; col++)
-            tableau[pivotRow, col] /= pivotValue;
+        {
+            if (tableau[pivotRow, col] != 0)
+            {
+                tableau[pivotRow, col] /= pivotValue;
+            }
+        }
+            
 
         // Eliminate other rows
         for (int row = 0; row < numRows; row++)
@@ -328,14 +334,19 @@ class SimplexMethod
     {
         for(int i=0; i<numRows; i++)
         {
-            double fractionalPart = this.tableau[i, numCols - 1] - Math.Floor(this.tableau[i, numCols - 1]);
-            if (Math.Round(fractionalPart,5).CompareTo(0.00000) != 0)
+           // double fractionalPart = this.tableau[i, numCols - 1] - Math.Floor(this.tableau[i, numCols - 1]);
+            if (!IsInteger(this.tableau[i, numCols - 1]))
             {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private bool IsInteger(double value)
+    {
+        return Math.Abs(value - Math.Round(value)) < 1e-6;
     }
 
     // Utility to display the tableau
@@ -372,11 +383,18 @@ class SimplexMethod
         // x1+x2<=5
         //4x1+7x2<=28
         //x1,x2 >= 0, integer
+        //double[,] tableau =
+        //{
+        //    { 1, 1, 1, 0, 5 },
+        //    { 4, 7, 0, 1, 28 },
+        //    { -5, -6, 0, 0, 0 } //Objective row
+        //};
+
         double[,] tableau =
         {
-            { 1, 1, 1, 0, 5 },
-            { 4, 7, 0, 1, 28 },
-            { -5, -6, 0, 0, 0 } //Objective row
+            { -1, 3, 1, 0, 6 },
+            { 7, 1, 0, 1, 35 },
+            { -7, -9, 0, 0, 0 } //Objective row
         };
 
         SimplexMethod simplex = new SimplexMethod(tableau);
